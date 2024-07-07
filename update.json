@@ -1,0 +1,27 @@
+[
+    {
+        "update_id":145231441,
+        "message":
+            {
+                "message_id":31,
+                "from":
+                    {
+                        "id":243154734,
+                        "is_bot":false,
+                        "first_name":"\u0438\u0433\u043e\u0440\uf{044c",
+                        "username":"x_developerx",
+                        "language_code":"en",
+                        "is_premium":true
+                    },
+                "chat":
+                    {
+                        "id":243154734,
+                        "first_name":"\u0438\u0433\u043e\u0440\u044c",
+                        "username":"x_developerx",
+                        "type":"private"
+                    },
+                "date":1720095177,
+                "text":"qqqq"
+            }
+    }
+]
