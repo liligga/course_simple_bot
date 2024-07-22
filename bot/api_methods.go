@@ -27,24 +27,23 @@ func (dp *Dispatcher) GetMeHandler(wg *sync.WaitGroup, client *http.Client) {
 	)
 
 	if err != nil {
-		fmt.Println(err) 
+		fmt.Println(err)
 		return
 	}
-	
-	resp, err := client.Do(rq) 
-	if err != nil { 
+
+	resp, err := client.Do(rq)
+	if err != nil {
 		fmt.Println("Error while makeing GetMe request: ", err)
 		return
-	} 
-	defer resp.Body.Close() 
+	}
+	defer resp.Body.Close()
 
 	io.Copy(os.Stdout, resp.Body)
 	fmt.Println("")
 }
 
-
 func (dp *Dispatcher) LongPollingTgAPI(
-	wg *sync.WaitGroup, 
+	wg *sync.WaitGroup,
 	client *http.Client,
 ) {
 
@@ -72,10 +71,10 @@ func (dp *Dispatcher) LongPollingTgAPI(
 			fmt.Println(err)
 			return
 		}
-	
-		resp, err := client.Do(rq) 
-		if err != nil { 
-			fmt.Println("Error when executing request: ", err) 
+
+		resp, err := client.Do(rq)
+		if err != nil {
+			fmt.Println("Error when executing request: ", err)
 			return
 		}
 
@@ -96,9 +95,11 @@ func (dp *Dispatcher) LongPollingTgAPI(
 			for _, update := range apiResponse.Results {
 				updateOffset = update.UpdateID
 				for _, v := range dp.Handlers {
-					result := v[0].(func(Update) bool)(update)
+					// check filter
+					result := v[0].(func(Update, *Bot) bool)(update, &dp.Bot)
 					if result {
-						v[1].(func(Update, Bot))(update, dp.Bot)
+						// if filter matches call associated handler
+						v[1].(func(Update, *Bot))(update, &dp.Bot)
 						break
 					}
 				}
@@ -107,7 +108,7 @@ func (dp *Dispatcher) LongPollingTgAPI(
 			// No updates - no need to offset
 			hadUpdates = false
 		}
-		
+
 		time.Sleep(500 * time.Millisecond)
 	}
 
