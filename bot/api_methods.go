@@ -45,6 +45,7 @@ func (dp *Dispatcher) GetMeHandler(wg *sync.WaitGroup, client *http.Client) {
 func (dp *Dispatcher) LongPollingTgAPI(
 	wg *sync.WaitGroup,
 	client *http.Client,
+	sleepRange time.Duration,
 ) {
 
 	defer wg.Done()
@@ -94,6 +95,7 @@ func (dp *Dispatcher) LongPollingTgAPI(
 			hadUpdates = true
 			for _, update := range apiResponse.Results {
 				updateOffset = update.UpdateID
+
 				for _, v := range dp.Handlers {
 					// check filter
 					result := v[0].(func(Update, *Bot) bool)(update, &dp.Bot)
@@ -109,7 +111,7 @@ func (dp *Dispatcher) LongPollingTgAPI(
 			hadUpdates = false
 		}
 
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(sleepRange)
 	}
 
 }

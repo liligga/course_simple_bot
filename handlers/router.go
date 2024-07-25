@@ -9,6 +9,11 @@ import (
 	"github.com/liligga/hw_tg_bot/bot"
 )
 
+func onStartup(dpp *bot.Dispatcher) {
+
+	fmt.Println("Bot started")
+}
+
 func NewApp(client *http.Client) bot.Dispatcher {
 
 	err := godotenv.Load()
@@ -23,20 +28,18 @@ func NewApp(client *http.Client) bot.Dispatcher {
 	}
 
 	myDispatcher := bot.NewDispatcher(tok, client)
+	myDispatcher.OnStartup(onStartup)
 
-	handlers := make([][2]interface{}, 0)
-	// handlers = append(handlers, [2]interface{}{CommandStartFilter, StartHandler})
-	// handlers = append(handlers, [2]interface{}{ButtonMenuFilter, MenuHandler})
-	// handlers = append(handlers, [2]interface{}{CommandMenuFilter, MenuHandler})
-	// handlers = append(handlers, [2]interface{}{CategoryFilter, CategoryHandler})
-	handlers = append(handlers, [2]interface{}{SendHomeWorkFilter, StartHomeworkDialogueHandler})
-	handlers = append(handlers, [2]interface{}{ProcessNameFilter, ProcessNameHandler})
-	handlers = append(handlers, [2]interface{}{ProcessGroupFilter, ProcessGroupHandler})
-	handlers = append(handlers, [2]interface{}{ProcessHomeWorkNumberFilter, ProcessHomeWorkNumberHandler})
-	handlers = append(handlers, [2]interface{}{ProcessLinkFilter, ProcessLinkHandler})
-	handlers = append(handlers, [2]interface{}{EmptyFilter, EchoHandler})
+	myDispatcher.AddHandlers(AddMenuHandlers()...)
+	myDispatcher.AddHandlers(AddHomeworkHandlers()...)
 
-	myDispatcher.Handlers = handlers
+	// Admin функционал
+	myDispatcher.AddHandlers(AddAdminHandlers()...)
+
+	// В самом конце !!!
+	myDispatcher.AddHandler([2]interface{}{EmptyFilter, EchoHandler})
+
+	// myDispatcher.Handlers = handlers
 
 	return myDispatcher
 }

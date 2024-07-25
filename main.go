@@ -12,7 +12,6 @@ import (
 	"github.com/liligga/hw_tg_bot/handlers"
 )
 
-
 func main() {
 	var wg sync.WaitGroup
 	// ctx := context.Background()
@@ -22,14 +21,14 @@ func main() {
 
 	myDispatcher := handlers.NewApp(client)
 
-
 	fmt.Println("Hello, World!")
 
 	wg.Add(1)
 	go myDispatcher.GetMeHandler(&wg, client)
 
 	wg.Add(1)
-	go myDispatcher.LongPollingTgAPI(&wg, client)
+	sleepRange := time.Duration(1000) * time.Millisecond
+	go myDispatcher.LongPollingTgAPI(&wg, client, sleepRange)
 
 	wg.Wait()
 }

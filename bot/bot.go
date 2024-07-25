@@ -15,12 +15,12 @@ type Bot struct {
 	token        string
 	client       *http.Client
 	userContexts map[int]*UserContext // context.Context
+	features     map[Feature]interface{}
 	mu           sync.RWMutex
 }
 
 type Dispatcher struct {
-	Bot Bot
-	// Updates  []Update
+	Bot      Bot
 	Handlers [][2]interface{}
 }
 
@@ -30,36 +30,22 @@ func NewDispatcher(token string, client *http.Client) Dispatcher {
 			token:        token,
 			client:       client,
 			userContexts: make(map[int]*UserContext),
+			features:     make(map[Feature]interface{}),
 		},
 		Handlers: make([][2]interface{}, 0),
-		// Updates: make([]Update, 0),
 	}
 }
 
-type KeyboardButton struct {
-	Text string `json:"text"`
+func (dp *Dispatcher) OnStartup(f func(dpp *Dispatcher)) {
+	f(dp)
 }
 
-type ReplyKeyboardMarkup struct {
-	Keyboard              [][]KeyboardButton `json:"keyboard"`
-	InputFieldPlaceholder string             `json:"input_field_placeholder"`
-	ResizeKeyboard        bool               `json:"resize_keyboard" default:"false"`
-	// OneTimeKeyboard			bool				`default:"false"`
-	// Selective 				bool				`default:"false"`
+func (dp *Dispatcher) AddHandler(handler [2]interface{}) {
+	dp.Handlers = append(dp.Handlers, handler)
 }
 
-type ReplyKeyboardRemove struct {
-	RemoveKeyboard bool `json:"remove_keyboard"`
-}
-
-type InlineKeyboardButton struct {
-	Text         string `json:"text"`
-	URL          string `json:"url"`
-	CallbackData string `json:"callback_data"`
-}
-
-type InlineKeyboardMarkup struct {
-	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
+func (dp *Dispatcher) AddHandlers(handlers ...[2]interface{}) {
+	dp.Handlers = append(dp.Handlers, handlers...)
 }
 
 type AttachedKeyboard struct {
@@ -68,6 +54,10 @@ type AttachedKeyboard struct {
 	ReplyMarkup    *ReplyKeyboardMarkup  `json:"reply_markup"`
 	KeyBoardRemove *ReplyKeyboardRemove  `json:"reply_markup"`
 	InlineMarkup   *InlineKeyboardMarkup `json:"inline_markup"`
+}
+
+type SimpleAnswer interface {
+	AddKeyboard()
 }
 
 type TextAnswer struct {

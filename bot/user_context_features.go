@@ -39,3 +39,34 @@ func (bot *Bot) DeleteUserContext(userID int, chatID int) {
 		}
 	}
 }
+
+type Feature string
+
+const (
+	RandomRecipeFeature   Feature = "RandomRecipe"
+	DishCategoriesFeature Feature = "DishCategories"
+	ReviewFeature         Feature = "Review"
+	DishesPicturesFeature Feature = "DishesPictures"
+	TestWorkFeature       Feature = "TestWork"
+)
+
+func (bot *Bot) AddFeature(feature Feature) {
+	bot.mu.Lock()
+	bot.features[feature] = true
+	bot.mu.Unlock()
+}
+
+func (bot *Bot) DeleteFeature(feature Feature) {
+	bot.mu.Lock()
+	if _, ok := bot.features[feature]; ok {
+		delete(bot.features, feature)
+	}
+	bot.mu.Unlock()
+}
+
+func (bot *Bot) HasFeature(feature Feature) bool {
+	if _, ok := bot.features[feature]; ok {
+		return true
+	}
+	return false
+}
