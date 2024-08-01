@@ -26,7 +26,7 @@ func main() {
 	wg.Add(1)
 	go myDispatcher.DeleteWebhook(&wg, client)
 
-	sleepRange := time.Duration(2000) * time.Millisecond
+	sleepRange := time.Duration(1000) * time.Millisecond
 	wg.Add(1)
 	go myDispatcher.LongPollingTgAPI(&wg, client, sleepRange)
 
