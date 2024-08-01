@@ -43,11 +43,12 @@ func (bot *Bot) DeleteUserContext(userID int, chatID int) {
 type Feature string
 
 const (
-	RandomRecipeFeature   Feature = "RandomRecipe"
-	DishCategoriesFeature Feature = "DishCategories"
-	ReviewFeature         Feature = "Review"
-	DishesPicturesFeature Feature = "DishesPictures"
-	TestWorkFeature       Feature = "TestWork"
+	SimplePictureAndStartFeature Feature = "SimplePictureAndStart"
+	RandomRecipeFeature          Feature = "RandomRecipe"
+	DishCategoriesFeature        Feature = "DishCategories"
+	ReviewFeature                Feature = "Review"
+	DishesPicturesFeature        Feature = "DishesPictures"
+	TestWorkFeature              Feature = "TestWork"
 )
 
 func (bot *Bot) AddFeature(feature Feature) {

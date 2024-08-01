@@ -30,6 +30,8 @@ func NewApp(client *http.Client) bot.Dispatcher {
 	myDispatcher := bot.NewDispatcher(tok, client)
 	myDispatcher.OnStartup(onStartup)
 
+	myDispatcher.AddHandlers(AddSimpleStartHandlers()...)
+	myDispatcher.AddHandlers(AddRandomRecipeHandlers()...)
 	myDispatcher.AddHandlers(AddMenuHandlers()...)
 	myDispatcher.AddHandlers(AddHomeworkHandlers()...)
 

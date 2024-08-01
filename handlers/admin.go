@@ -9,6 +9,7 @@ import (
 )
 
 var BotFeatures = []bot.Feature{
+	bot.SimplePictureAndStartFeature,
 	bot.RandomRecipeFeature,
 	bot.DishCategoriesFeature,
 	bot.ReviewFeature,
@@ -17,6 +18,7 @@ var BotFeatures = []bot.Feature{
 }
 
 var TextFeatures = map[string]bot.Feature{
+	"Простая картинка и старт":        bot.SimplePictureAndStartFeature,
 	"Счетчик и рандомные рецепты":     bot.RandomRecipeFeature,
 	"Категории блюд, меню при старте": bot.DishCategoriesFeature,
 	"Отзыв в виде диалога":            bot.ReviewFeature,
@@ -28,16 +30,20 @@ func AdminCommandFilter(update bot.Update, theBot *bot.Bot) bool {
 	isAdmin := update.Message.Chat.ID == 243154734
 	command := update.Message.Text == "/admin"
 
+	fmt.Println(isAdmin, command)
+	fmt.Println("Admin command: ", update.Message.Text)
+
 	return isAdmin && command
 }
 
 func renderFeatureButton(feature bot.Feature, theBot *bot.Bot) string {
 	featureText := map[bot.Feature]string{
-		bot.RandomRecipeFeature:   "Счетчик и рандомные рецепты",
-		bot.DishCategoriesFeature: "Категории блюд, меню при старте",
-		bot.ReviewFeature:         "Отзыв в виде диалога",
-		bot.DishesPicturesFeature: "Блюда с картиками из БД",
-		bot.TestWorkFeature:       "Пример работы бота для теста",
+		bot.SimplePictureAndStartFeature: "Простая картинка и старт",
+		bot.RandomRecipeFeature:          "Счетчик и рандомные рецепты",
+		bot.DishCategoriesFeature:        "Категории блюд, меню при старте",
+		bot.ReviewFeature:                "Отзыв в виде диалога",
+		bot.DishesPicturesFeature:        "Блюда с картиками из БД",
+		bot.TestWorkFeature:              "Пример работы бота для теста",
 	}
 	if theBot.HasFeature(feature) {
 		return fmt.Sprintf("✅ %s", featureText[feature])
@@ -74,6 +80,7 @@ func AdminButtonsFilter(update bot.Update, theBot *bot.Bot) bool {
 	isAdmin := update.Message.Chat.ID == 243154734
 	areButtonsClicked := slices.Contains(
 		[]string{
+			"Простая картинка и старт",
 			"Счетчик и рандомные рецепты",
 			"Категории блюд, меню при старте",
 			"Отзыв в виде диалога",

@@ -6,9 +6,6 @@ import (
 	"sync"
 	"time"
 
-	// "github.com/joho/godotenv"
-
-	// "github.com/liligga/hw_tg_bot/bot"
 	"github.com/liligga/hw_tg_bot/handlers"
 )
 
@@ -27,7 +24,10 @@ func main() {
 	go myDispatcher.GetMeHandler(&wg, client)
 
 	wg.Add(1)
-	sleepRange := time.Duration(1000) * time.Millisecond
+	go myDispatcher.DeleteWebhook(&wg, client)
+
+	sleepRange := time.Duration(2000) * time.Millisecond
+	wg.Add(1)
 	go myDispatcher.LongPollingTgAPI(&wg, client, sleepRange)
 
 	wg.Wait()

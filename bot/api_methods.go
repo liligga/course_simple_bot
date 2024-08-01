@@ -42,6 +42,34 @@ func (dp *Dispatcher) GetMeHandler(wg *sync.WaitGroup, client *http.Client) {
 	fmt.Println("")
 }
 
+func (dp *Dispatcher) DeleteWebhook(wg *sync.WaitGroup, client *http.Client) {
+	defer wg.Done()
+	url := dp.Bot.createRequestURL("deleteWebhook")
+	fmt.Println(url)
+
+	rq, err := http.NewRequest(
+		http.MethodPost,
+		url,
+		nil,
+	)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	resp, err := client.Do(rq)
+	if err != nil {
+		fmt.Println("Error while makeing DeleteWebhook request: ", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	io.Copy(os.Stdout, resp.Body)
+	fmt.Println("")
+
+}
+
 func (dp *Dispatcher) LongPollingTgAPI(
 	wg *sync.WaitGroup,
 	client *http.Client,
@@ -51,6 +79,8 @@ func (dp *Dispatcher) LongPollingTgAPI(
 	defer wg.Done()
 	updateOffset := 0
 	hadUpdates := false
+
+	fmt.Println("LongPolling started")
 
 	// loop to request updates
 	for {
