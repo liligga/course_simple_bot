@@ -21,6 +21,9 @@ func main() {
 	go myDispatcher.GetMeHandler(&wg, client)
 
 	wg.Add(1)
+	go myDispatcher.SetMyCommands(&wg, client)
+
+	wg.Add(1)
 	go myDispatcher.DeleteWebhook(&wg, client)
 
 	sleepRange := time.Duration(1500) * time.Millisecond

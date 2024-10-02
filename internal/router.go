@@ -11,10 +11,11 @@ import (
 )
 
 func onStartup(dpp *bot.Dispatcher) {
-	handlers.SetMyCommandsAdmin(&dpp.Bot)
-	if dpp.Bot.HasFeature(handlers.ReviewFeature) {
-		handlers.SetMyCommandsProducts(&dpp.Bot)
-	}
+	// handlers.SetMyCommandsAdmin(&dpp.Bot)
+	// if dpp.Bot.HasFeature(handlers.ReviewFeature) {
+	// 	handlers.SetMyCommandsProducts(&dpp.Bot)
+	// }
+	handlers.SetMyCommandsProducts(&dpp.Bot)
 	dpp.Bot.ToggleFeature(handlers.InlineButtonsMenuFeature)
 	fmt.Println("Bot started")
 }

@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -68,6 +69,38 @@ func (dp *Dispatcher) DeleteWebhook(wg *sync.WaitGroup, client *http.Client) {
 	io.Copy(os.Stdout, resp.Body)
 	fmt.Println("")
 
+}
+
+func (dp *Dispatcher) SetMyCommands(wg *sync.WaitGroup, client *http.Client) {
+	defer wg.Done()
+	commands := dp.Bot.GetMyCommands()
+	data, err := json.Marshal(commands)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(string(data))
+
+	url := dp.Bot.createRequestURL("setMyCommands")
+
+	rq, err := http.NewRequest(
+		http.MethodPost,
+		url,
+		bytes.NewBuffer(data),
+	)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	resp, err := client.Do(rq)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer resp.Body.Close()
 }
 
 func (dp *Dispatcher) LongPollingTgAPI(

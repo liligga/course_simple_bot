@@ -1,12 +1,5 @@
 package bot
 
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"net/http"
-)
-
 type BotCommand struct {
 	Command     string `json:"command"`
 	Description string `json:"description"`
@@ -57,32 +50,4 @@ type BotCommandScopeChatMemberStruct struct {
 type BotCommands struct {
 	Commands []BotCommand `json:"commands"`
 	Scope    interface{}  `json:"scope"`
-}
-
-func (bot *Bot) SetMyCommands(commands BotCommands) {
-	data, err := json.Marshal(commands)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	url := bot.createRequestURL("setMyCommands")
-
-	rq, err := http.NewRequest(
-		http.MethodPost,
-		url,
-		bytes.NewBuffer(data),
-	)
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	resp, err := bot.client.Do(rq)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer resp.Body.Close()
 }

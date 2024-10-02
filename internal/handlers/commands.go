@@ -17,7 +17,10 @@ func SetMyCommandsAdmin(theBot *bot.Bot) {
 			ChatID: 243154734,
 		},
 	}
-	theBot.SetMyCommands(adminCommands)
+
+	for cmd := range adminCommands.Commands {
+		theBot.AddCommand(adminCommands.Commands[cmd])
+	}
 }
 
 func SetMyCommandsProducts(theBot *bot.Bot) {
@@ -44,5 +47,8 @@ func SetMyCommandsProducts(theBot *bot.Bot) {
 			Type: bot.BotCommandScopeAllPrivateChats,
 		},
 	}
-	theBot.SetMyCommands(productsCommands)
+
+	for cmd := range productsCommands.Commands {
+		theBot.AddCommand(productsCommands.Commands[cmd])
+	}
 }

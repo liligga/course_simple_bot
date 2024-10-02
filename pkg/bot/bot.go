@@ -16,6 +16,7 @@ type Bot struct {
 	client       *http.Client
 	userContexts map[int]*UserContext // context.Context
 	features     map[Feature]interface{}
+	commands     map[string]string
 	mu           sync.RWMutex
 }
 
@@ -31,6 +32,7 @@ func NewDispatcher(token string, client *http.Client) Dispatcher {
 			client:       client,
 			userContexts: make(map[int]*UserContext),
 			features:     make(map[Feature]interface{}),
+			commands:     make(map[string]string),
 		},
 		Handlers: make([][2]interface{}, 0),
 	}
@@ -46,6 +48,24 @@ func (dp *Dispatcher) AddHandler(handler [2]interface{}) {
 
 func (dp *Dispatcher) AddHandlers(handlers ...[2]interface{}) {
 	dp.Handlers = append(dp.Handlers, handlers...)
+}
+
+func (theBot *Bot) AddCommand(command BotCommand) {
+	theBot.commands[command.Command] = command.Description
+}
+
+func (theBot *Bot) GetMyCommands() BotCommands {
+	var commands []BotCommand
+	for k, v := range theBot.commands {
+		commands = append(commands, BotCommand{
+			Command:     k,
+			Description: v,
+		})
+	}
+	return BotCommands{
+		Commands: commands,
+		Scope:    BotCommandScopeDefaultStruct{Type: BotCommandScopeDefault},
+	}
 }
 
 type AttachedKeyboard struct {
