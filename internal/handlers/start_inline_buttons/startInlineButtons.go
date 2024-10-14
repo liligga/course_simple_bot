@@ -1,4 +1,4 @@
-package handlers
+package startinlinebuttons
 
 import (
 	"fmt"
@@ -6,17 +6,25 @@ import (
 	"os"
 	"strconv"
 
+	handlers "github.com/liligga/hw_tg_bot/internal/handlers"
 	bot "github.com/liligga/hw_tg_bot/pkg/bot"
 )
 
-func CommandStartFilter2(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(InlineButtonsMenuFeature) {
+var recipies = [4]string{
+	"Омлет: Для приготовления омлета разбейте 3 куринных яйца и добавьте пол стакана молока, все взбейте и запеките",
+	"Котлета: Для приготовления котлеты смешайте фарш с яйцом, тестом, добавьте соль и запекайте",
+	"Борщ: Для приготовления борща поставьте мясо вариться на 40 минут, сделайте зажарку. Добавьте капусту и картофель в бульон. Добавьте зажарку",
+	"Ризотто: В сотейнике растопите масло и обжарьте на нём измельчённый лук. Выложите рис и обжаривайте пару минут.Постепенно влейте в рис вино и горячий бульон. Затем добавьте рыбу, нарезанную небольшими кусочками, рубленый зелёный лук и шпинат и перемешайте.  Готовьте ещё немного, пока шпинат не размягчится. При необходимости добавьте в ризотто соль.",
+}
+
+func CommandStartFilter(update bot.Update, theBot *bot.Bot) bool {
+	if !theBot.HasFeature(handlers.InlineButtonsMenuFeature) {
 		return false
 	}
 	return update.Message.Text == "/start"
 }
 
-func StartHandler2(update bot.Update, theBot *bot.Bot) {
+func StartHandler(update bot.Update, theBot *bot.Bot) {
 	kb := bot.InlineKeyboardMarkup{
 		InlineKeyboard: [][]bot.InlineKeyboardButton{
 			{
@@ -27,17 +35,18 @@ func StartHandler2(update bot.Update, theBot *bot.Bot) {
 			{
 				{Text: "Вакансии", CallbackData: "vacancies"},
 				{Text: "О нас", CallbackData: "about"},
+				{Text: "Оставить отзыв", CallbackData: "restaurant_review"},
 			},
 		},
 	}
 
 	text := "Привет, я бот ресторана 'Ресторан'. Я помогу тебе выбрать что заказать\n" +
 		"Доступные категории блюд: \n" +
-		"Супы, Салаты, Закуски, Охладительные напитки, Горячие напитки, Десерты\n" +
-		"Также продолжают работать команды:\n" +
-		"/start - начать работу с ботом\n" +
-		"/random_recipe - рандомный рецепт\n" +
-		"/myinfo - информация о тебе\n"
+		"Супы, Салаты, Закуски, Охладительные напитки, Горячие напитки, Десерты\n" // +
+		// "Также продолжают работать команды:\n" +
+		// "/start - начать работу с ботом\n" +
+		// "/random_recipe - рандомный рецепт\n" +
+		// "/myinfo - информация о тебе\n"
 	answer := bot.NewTextAnswer(
 		update.Message.Chat.ID,
 		text,
@@ -47,7 +56,7 @@ func StartHandler2(update bot.Update, theBot *bot.Bot) {
 }
 
 func ContactsButtonFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(InlineButtonsMenuFeature) {
+	if !theBot.HasFeature(handlers.InlineButtonsMenuFeature) {
 		return false
 	}
 	data := update.CallbackQuery.Data
@@ -64,7 +73,7 @@ func ContactsHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func ScheduleButtonFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(InlineButtonsMenuFeature) {
+	if !theBot.HasFeature(handlers.InlineButtonsMenuFeature) {
 		return false
 	}
 	data := update.CallbackQuery.Data
@@ -81,7 +90,7 @@ func ScheduleHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func VacanciesButtonFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(InlineButtonsMenuFeature) {
+	if !theBot.HasFeature(handlers.InlineButtonsMenuFeature) {
 		return false
 	}
 	data := update.CallbackQuery.Data
@@ -98,7 +107,7 @@ func VacanciesHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func AboutButtonFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(InlineButtonsMenuFeature) {
+	if !theBot.HasFeature(handlers.InlineButtonsMenuFeature) {
 		return false
 	}
 	data := update.CallbackQuery.Data
@@ -115,7 +124,7 @@ func AboutHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func FoodCategoryFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(InlineButtonsMenuFeature) {
+	if !theBot.HasFeature(handlers.InlineButtonsMenuFeature) {
 		return false
 	}
 	msgText := update.Message.Text
@@ -182,7 +191,7 @@ func FoodCategoryHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func RandomRecipeFilter2(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(InlineButtonsMenuFeature) {
+	if !theBot.HasFeature(handlers.InlineButtonsMenuFeature) {
 		return false
 	}
 	return update.Message.Text == "/random_recipe"
@@ -198,7 +207,7 @@ func RandomRecipeHandler2(update bot.Update, theBot *bot.Bot) {
 }
 
 func InfoCommandFilter2(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(InlineButtonsMenuFeature) {
+	if !theBot.HasFeature(handlers.InlineButtonsMenuFeature) {
 		return false
 	}
 	return update.Message.Text == "/myinfo"
@@ -219,6 +228,7 @@ func InfoCommandHandler2(update bot.Update, theBot *bot.Bot) {
 
 	theBot.SendMessage(answer)
 }
+
 func AddCategoriesHandlers() [][2]interface{} {
 	handlers := [][2]interface{}{
 		{FoodCategoryFilter, FoodCategoryHandler},
@@ -226,9 +236,9 @@ func AddCategoriesHandlers() [][2]interface{} {
 		{ScheduleButtonFilter, ScheduleHandler},
 		{VacanciesButtonFilter, VacanciesHandler},
 		{AboutButtonFilter, AboutHandler},
-		{RandomRecipeFilter2, RandomRecipeHandler2},
-		{InfoCommandFilter2, InfoCommandHandler2},
-		{CommandStartFilter2, StartHandler2},
+		// {RandomRecipeFilter2, RandomRecipeHandler2},
+		// {InfoCommandFilter2, InfoCommandHandler2},
+		{CommandStartFilter, StartHandler},
 	}
 
 	return handlers

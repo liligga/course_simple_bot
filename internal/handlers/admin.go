@@ -16,6 +16,7 @@ const (
 	ReviewFeature                bot.Feature = "Review"
 	DishesPicturesFeature        bot.Feature = "DishesPictures"
 	TestWorkFeature              bot.Feature = "TestWork"
+	RestaurantReviewFeature      bot.Feature = "RestaurantReviewFeature"
 )
 
 var BotFeatures = []bot.Feature{
@@ -163,7 +164,10 @@ func AdminButtonHandler(update bot.Update, theBot *bot.Bot) {
 
 func AdminQuitFilter(update bot.Update, theBot *bot.Bot) bool {
 	isAdmin := update.Message.Chat.ID == 243154734
-	return isAdmin && update.Message.Text == "/quit"
+	return isAdmin && slices.Contains(
+		[]string{"/quit", "/stop", "/exit"},
+		update.Message.Text,
+	)
 }
 
 func AdminQuitHandler(update bot.Update, theBot *bot.Bot) {

@@ -1,9 +1,10 @@
-package handlers
+package homework
 
 import (
 	"slices"
 	"strings"
 
+	handlers "github.com/liligga/hw_tg_bot/internal/handlers"
 	bot "github.com/liligga/hw_tg_bot/pkg/bot"
 )
 
@@ -17,7 +18,7 @@ const (
 )
 
 func SendHomeWorkFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(TestWorkFeature) {
+	if !theBot.HasFeature(handlers.TestWorkFeature) {
 		return false
 	}
 	return update.Message.Text == "/send_hmw"
@@ -28,7 +29,7 @@ func StartHomeworkDialogueHandler(update bot.Update, theBot *bot.Bot) {
 		update.Message.Chat.ID,
 		"Как вас зовут?",
 	)
-	userContext := theBot.GetUserContext(
+	userContext := theBot.GetOrCreateUserContext(
 		update.Message.From.ID,
 		update.Message.Chat.ID,
 	)
@@ -38,13 +39,13 @@ func StartHomeworkDialogueHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func ProcessNameFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(TestWorkFeature) {
+	if !theBot.HasFeature(handlers.TestWorkFeature) {
 		return false
 	}
 	userId := update.Message.From.ID
 	chatId := update.Message.Chat.ID
 
-	userContext := theBot.GetUserContext(userId, chatId)
+	userContext := theBot.GetOrCreateUserContext(userId, chatId)
 
 	return userContext.CurrentState == string(Name)
 }
@@ -69,7 +70,7 @@ func ProcessNameHandler(update bot.Update, theBot *bot.Bot) {
 	}
 	answer.AddReplyMarkup(&reply_keyboard)
 
-	userContext := theBot.GetUserContext(
+	userContext := theBot.GetOrCreateUserContext(
 		update.Message.From.ID,
 		update.Message.Chat.ID,
 	)
@@ -78,13 +79,13 @@ func ProcessNameHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func ProcessGroupFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(TestWorkFeature) {
+	if !theBot.HasFeature(handlers.TestWorkFeature) {
 		return false
 	}
 	userID := update.Message.From.ID
 	chatID := update.Message.Chat.ID
 
-	userContext := theBot.GetUserContext(userID, chatID)
+	userContext := theBot.GetOrCreateUserContext(userID, chatID)
 	state := userContext.CurrentState == string(Group)
 	msgText := slices.Contains(
 		[]string{"43-1", "43-2", "42-1", "42-2"},
@@ -100,7 +101,7 @@ func ProcessGroupHandler(update bot.Update, theBot *bot.Bot) {
 		"Номер домашнего задания?",
 	)
 
-	userContext := theBot.GetUserContext(
+	userContext := theBot.GetOrCreateUserContext(
 		update.Message.From.ID,
 		update.Message.Chat.ID,
 	)
@@ -130,13 +131,13 @@ func ProcessGroupHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func ProcessHomeWorkNumberFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(TestWorkFeature) {
+	if !theBot.HasFeature(handlers.TestWorkFeature) {
 		return false
 	}
 	userID := update.Message.From.ID
 	chatID := update.Message.Chat.ID
 
-	userContext := theBot.GetUserContext(userID, chatID)
+	userContext := theBot.GetOrCreateUserContext(userID, chatID)
 	state := userContext.CurrentState == string(HomeWorkNumber)
 	msgText := slices.Contains(
 		[]string{"1", "2", "3", "4", "5", "6", "7", "8"},
@@ -152,7 +153,7 @@ func ProcessHomeWorkNumberHandler(update bot.Update, theBot *bot.Bot) {
 		"Ссылка на домашнее задание?",
 	)
 
-	userContext := theBot.GetUserContext(
+	userContext := theBot.GetOrCreateUserContext(
 		update.Message.From.ID,
 		update.Message.Chat.ID,
 	)
@@ -165,13 +166,13 @@ func ProcessHomeWorkNumberHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func ProcessLinkFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(TestWorkFeature) {
+	if !theBot.HasFeature(handlers.TestWorkFeature) {
 		return false
 	}
 	userID := update.Message.From.ID
 	chatID := update.Message.Chat.ID
 
-	userContext := theBot.GetUserContext(userID, chatID)
+	userContext := theBot.GetOrCreateUserContext(userID, chatID)
 	correctState := userContext.CurrentState == string(Link)
 
 	link := strings.Contains(update.Message.Text, "https://github.com/")

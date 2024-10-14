@@ -1,6 +1,9 @@
 package bot
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type UserContext struct {
 	ChatID       int
@@ -10,7 +13,18 @@ type UserContext struct {
 	CurrentState string
 }
 
-func (bot *Bot) GetUserContext(userID int, chatID int) *UserContext {
+func (bot *Bot) GetUserContext(userID int, chatID int) (*UserContext, error) {
+	bot.mu.RLock()
+	defer bot.mu.RUnlock()
+	if ctx, ok := bot.userContexts[userID]; ok {
+		if ctx.ChatID == chatID {
+			return ctx, nil
+		}
+	}
+	return nil, errors.New("user context not found")
+}
+
+func (bot *Bot) GetOrCreateUserContext(userID int, chatID int) *UserContext {
 	bot.mu.RLock()
 	defer bot.mu.RUnlock()
 	if ctx, ok := bot.userContexts[userID]; ok {
@@ -38,6 +52,16 @@ func (bot *Bot) DeleteUserContext(userID int, chatID int) {
 			delete(bot.userContexts, userID)
 		}
 	}
+}
+
+func (bot *Bot) SetContextState(userID int, chatID int, state string) {
+	userContext := bot.GetOrCreateUserContext(userID, chatID)
+	userContext.CurrentState = state
+}
+
+func (bot *Bot) GetContextState(userID int, chatID int) string {
+	userContext := bot.GetOrCreateUserContext(userID, chatID)
+	return userContext.CurrentState
 }
 
 type Feature string

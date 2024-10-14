@@ -1,14 +1,15 @@
-package handlers
+package startwithmenu
 
 import (
 	"fmt"
 	"os"
 
+	handlers "github.com/liligga/hw_tg_bot/internal/handlers"
 	bot "github.com/liligga/hw_tg_bot/pkg/bot"
 )
 
 func CommandStartFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(DishCategoriesFeature) {
+	if !theBot.HasFeature(handlers.DishCategoriesFeature) {
 		return false
 	}
 	return update.Message.Text == "/start"
@@ -40,14 +41,14 @@ func StartHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func ButtonMenuFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(DishCategoriesFeature) {
+	if !theBot.HasFeature(handlers.DishCategoriesFeature) {
 		return false
 	}
 	return update.CallbackQuery.Data == "menu"
 }
 
 func CommandMenuFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(DishCategoriesFeature) {
+	if !theBot.HasFeature(handlers.DishCategoriesFeature) {
 		return false
 	}
 	return update.Message.Text == "/menu"
@@ -91,7 +92,7 @@ func MenuHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func CategoryFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(DishCategoriesFeature) {
+	if !theBot.HasFeature(handlers.DishCategoriesFeature) {
 		return false
 	}
 	msgText := update.Message.Text

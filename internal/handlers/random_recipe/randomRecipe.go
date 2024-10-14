@@ -1,9 +1,10 @@
-package handlers
+package randomrecipe
 
 import (
 	"math/rand"
 	"strconv"
 
+	handlers "github.com/liligga/hw_tg_bot/internal/handlers"
 	bot "github.com/liligga/hw_tg_bot/pkg/bot"
 )
 
@@ -16,7 +17,7 @@ var recipies = [4]string{
 }
 
 func StartCommandFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(RandomRecipeFeature) {
+	if !theBot.HasFeature(handlers.RandomRecipeFeature) {
 		return false
 	}
 	return update.Message.Text == "/start"
@@ -44,7 +45,7 @@ func StartCommandHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func RandomRecipeFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(RandomRecipeFeature) {
+	if !theBot.HasFeature(handlers.RandomRecipeFeature) {
 		return false
 	}
 	return update.Message.Text == "/random_recipe"
@@ -60,7 +61,7 @@ func RandomRecipeHandler(update bot.Update, theBot *bot.Bot) {
 }
 
 func InfoCommandFilter(update bot.Update, theBot *bot.Bot) bool {
-	if !theBot.HasFeature(RandomRecipeFeature) {
+	if !theBot.HasFeature(handlers.RandomRecipeFeature) {
 		return false
 	}
 	return update.Message.Text == "/myinfo"

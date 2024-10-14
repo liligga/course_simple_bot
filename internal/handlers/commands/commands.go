@@ -1,4 +1,4 @@
-package handlers
+package commands
 
 import (
 	bot "github.com/liligga/hw_tg_bot/pkg/bot"
